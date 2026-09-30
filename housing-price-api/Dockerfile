@@ -1,6 +1,6 @@
 # Dockerfile
 # -----------
-# Packages the FastAPI service (api.py) + its trained model into one
+# Packages the FastAPI service (housing/api/main.py) + its trained model into one
 # self-contained image -- the same idea as a Java "fat JAR" bundling your
 # app and its dependencies, except this also includes the OS-level Python
 # runtime itself, so it runs identically on ANY machine with Docker.

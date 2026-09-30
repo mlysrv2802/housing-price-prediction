@@ -1,6 +1,6 @@
 """
-api.py
-------
+main.py
+-------
 Wraps the trained model in a REST API — this is the piece your Angular app
 will call over HTTP, the same way it currently calls your Java backend.
 
@@ -21,7 +21,7 @@ Key production ideas here, mapped to what you already know from Java/Spring:
     Actuator's /health.
 
 Run:
-    uvicorn api:app --reload --port 8000
+    uvicorn housing.api.main:app --reload --port 8000
 
 Then open http://127.0.0.1:8000/docs — FastAPI auto-generates an interactive
 Swagger UI from your pydantic models, so you can test /predict without
