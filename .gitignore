@@ -6,7 +6,7 @@ venv/
 .pytest_cache/
 
 # Generated at runtime (rebuild with generate_data / train)
-
+storage/
 logs/
 *.log
 housing-price-api/experiments/outputs/
