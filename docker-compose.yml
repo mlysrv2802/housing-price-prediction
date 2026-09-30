@@ -1,0 +1,19 @@
+# Root compose: reuses the API stack (api + scheduler) defined in
+# housing-price-api/docker-compose.yml and adds the UI on top.
+# Requires Docker Compose v2.20+ (for `include`).
+#
+# Run:  docker compose up -d --build
+# UI:   http://localhost:4200    API: http://localhost:8000/docs
+
+include:
+  - housing-price-api/docker-compose.yml   # relative paths inside it resolve from its own folder
+
+services:
+  ui:
+    build: ./housing-price-ui
+    container_name: housing-ui
+    ports:
+      - "4200:80"          # host 4200 matches the API's CORS allow-list
+    depends_on:
+      - api
+    restart: unless-stopped

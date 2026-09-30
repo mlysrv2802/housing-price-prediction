@@ -1,0 +1,47 @@
+# docker-compose.yml
+# --------------------
+# Replaces the long `docker run -d -p ... -v ... -v ... housing-price-api`
+# command with a single file you can version-control and reuse.
+#
+# Run:    docker compose up -d      (build + start, detached)
+# Stop:   docker compose down
+# Logs:   docker compose logs -f
+# Rebuild after code changes: docker compose up -d --build
+
+services:
+  bootstrap_housing_data:
+    build: .
+    container_name: housing-bootstrap
+    command: python -c "from housing.jobs.scheduler import bootstrap_if_needed; bootstrap_if_needed()"
+    volumes:
+      - ../storage/models:/storage/models
+      - ../storage/data:/storage/data
+    # no restart policy -- this container is meant to run once and exit
+
+  api:
+    build: .                    # build from the Dockerfile in this folder
+    container_name: housing-api
+    depends_on:
+      bootstrap_housing_data:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../storage/models:/storage/models    # live link to your host's models/ folder
+      - ../storage/data:/storage/data        # live link to your host's data/ folder
+    restart: unless-stopped     # auto-restart if it crashes, but not if you
+                                  # deliberately stop it -- similar to how a
+                                  # systemd service or k8s pod would behave
+  scheduler:
+    build: .                          # same Dockerfile, same image contents
+    container_name: housing-data-retraining-scheduler
+    command: python -m housing.jobs.scheduler
+    depends_on:
+      bootstrap_housing_data:
+        condition: service_completed_successfully      # OVERRIDES the Dockerfile's default CMD
+    volumes:
+      - ../storage/models:/app/models          # same shared volumes as api --
+      - ../storage/data:/app/data              # both containers see the same files
+    environment:
+      - API_BASE_URL=http://api:8000  # "api" = the OTHER service's name above
+    restart: unless-stopped

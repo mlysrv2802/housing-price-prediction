@@ -1,0 +1,59 @@
+<div class="house-form-container">
+  <h2>Housing Price Predictor</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="area_sqft">Area (sq ft)</label>
+      <input id="area_sqft" type="number" formControlName="area_sqft" />
+      @if (form.get('area_sqft')?.invalid && form.get('area_sqft')?.touched) {
+        <span class="error">Enter a valid area</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="bedrooms">Bedrooms</label>
+      <input id="bedrooms" type="number" formControlName="bedrooms" />
+    </div>
+
+    <div class="field">
+      <label for="bathrooms">Bathrooms</label>
+      <input id="bathrooms" type="number" formControlName="bathrooms" />
+    </div>
+
+    <div class="field">
+      <label for="age_years">Age (years)</label>
+      <input id="age_years" type="number" formControlName="age_years" />
+    </div>
+
+    <div class="field">
+      <label for="distance_to_city_km">Distance to city (km)</label>
+      <input id="distance_to_city_km" type="number" formControlName="distance_to_city_km" />
+    </div>
+
+    <div class="field">
+      <label for="location_tier">Location Tier</label>
+      <select id="location_tier" formControlName="location_tier">
+        @for (tier of locationTiers; track tier) {
+          <option [value]="tier">{{ tier }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Read signal value with parentheses () -->
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'Predicting...' : 'Predict Price' }}
+    </button>
+  </form>
+
+  <!-- Read signal value with parentheses () -->
+  @if (predictedPrice() !== null) {
+    <div class="result">
+      Predicted Price: <strong>₹{{ predictedPrice() | number }}</strong>
+    </div>
+  }
+
+  <!-- Read signal value with parentheses () -->
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+</div>

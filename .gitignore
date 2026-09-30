@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Generated at runtime (rebuild with generate_data / train)
+
+logs/
+*.log
+housing-price-api/experiments/outputs/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
